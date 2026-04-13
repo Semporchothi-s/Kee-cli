@@ -17,6 +17,20 @@
 - 💉 **Native Shell Integration**: No wrapper shell needed—recording occurs in your native environment via lightweight hooks.
 
 
+## 📦 Installation
+
+**macOS / Linux:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/Semporchothi-s/Kee-cli/main/install.sh | bash
+```
+
+**Windows (PowerShell):**
+```powershell
+irm https://raw.githubusercontent.com/Semporchothi-s/Kee-cli/main/install.ps1 | iex
+```
+
+---
+
 ## 📖 Quick Start
 
 ### 1. Initialize & Configure

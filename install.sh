@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-REPO="Semporchothi-s/Project-Kee"
+REPO="Semporchothi-s/Kee-cli"
 BASE_URL="https://github.com/$REPO/releases"
 
 # Allow version override via env var, otherwise fetch latest from GitHub API
