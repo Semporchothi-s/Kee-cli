@@ -3,7 +3,6 @@ param([string]$Version = "")
 $Repo = "Semporchothi-s/Project-Kee"
 $BaseUrl = "https://github.com/$Repo/releases"
 
-# Resolve version: use param, else fetch latest from GitHub API
 if (-not $Version) {
     try {
         $release = Invoke-RestMethod "https://api.github.com/repos/$Repo/releases/latest"
@@ -24,10 +23,14 @@ $Tmp = Join-Path $env:TEMP "kee-install.exe"
 Invoke-WebRequest -Uri $Url -OutFile $Tmp
 
 Write-Host "Running self-install..."
-& $Tmp self-install
+$process = Start-Process -FilePath $Tmp -ArgumentList "self-install" -NoNewWindow -Wait -PassThru
 
-Remove-Item $Tmp -Force
-
-Write-Host ""
-Write-Host "kee v$Version installed successfully!"
-Write-Host "Restart your terminal, then run: kee --version"
+if ($process.ExitCode -eq 0) {
+    Remove-Item $Tmp -Force
+    Write-Host ""
+    Write-Host "kee v$Version installed successfully!"
+    Write-Host "Restart your terminal, then run: kee --version"
+} else {
+    Write-Error "Self-install failed with exit code $($process.ExitCode)"
+    exit 1
+}
