@@ -18,20 +18,24 @@ if [ -z "$VERSION" ]; then
   exit 1
 fi
 
-echo "Installing kee v$VERSION..."
+# Ensure CLEAN_VERSION has no 'v' and TAG has 'v'
+CLEAN_VERSION="${VERSION#v}"
+TAG="v$CLEAN_VERSION"
+
+echo "Installing kee $TAG..."
 
 OS=$(uname -s)
 ARCH=$(uname -m)
 
 case "$OS" in
   Linux*)
-    FILE="kee-linux-v$VERSION"
+    FILE="kee-linux-v$CLEAN_VERSION"
     ;;
   Darwin*)
     if [ "$ARCH" = "arm64" ]; then
-      FILE="kee-mac-m-series-v$VERSION"
+      FILE="kee-mac-m-series-v$CLEAN_VERSION"
     else
-      FILE="kee-mac-intel-v$VERSION"
+      FILE="kee-mac-intel-v$CLEAN_VERSION"
     fi
     ;;
   MINGW*|MSYS*|CYGWIN*)
@@ -47,7 +51,7 @@ case "$OS" in
     ;;
 esac
 
-DOWNLOAD_URL="$BASE_URL/download/v$VERSION/$FILE"
+DOWNLOAD_URL="$BASE_URL/download/$TAG/$FILE"
 echo "Downloading from: $DOWNLOAD_URL"
 
 TMP=$(mktemp)

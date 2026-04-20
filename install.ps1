@@ -6,15 +6,19 @@ $BaseUrl = "https://github.com/$Repo/releases"
 if (-not $Version) {
     try {
         $release = Invoke-RestMethod "https://api.github.com/repos/$Repo/releases/latest"
-        $Version = $release.tag_name -replace '^v', ''
+        $Version = $release.tag_name
     } catch {
         Write-Error "Could not determine latest version. Pass -Version explicitly: .\install.ps1 -Version 1.5.0"
         exit 1
     }
 }
 
-$File = "kee-windows-v$Version.exe"
-$Url  = "$BaseUrl/download/v$Version/$File"
+# Ensure tag has lead 'v' for the URL path, but filenames use clean versions
+$Tag = if ($Version -like "v*") { $Version } else { "v$Version" }
+$CleanVersion = $Tag -replace '^v', ''
+
+$File = "kee-windows-v$CleanVersion.exe"
+$Url  = "$BaseUrl/download/$Tag/$File"
 
 Write-Host "Installing kee v$Version..."
 Write-Host "Downloading from: $Url"
