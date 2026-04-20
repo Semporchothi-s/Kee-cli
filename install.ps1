@@ -1,6 +1,6 @@
 param([string]$Version = "")
 
-$Repo = "Semporchothi-s/Project-Kee"
+$Repo = "Semporchothi-s/Kee-cli"
 $BaseUrl = "https://github.com/$Repo/releases"
 
 if (-not $Version) {
@@ -19,18 +19,36 @@ $Url  = "$BaseUrl/download/v$Version/$File"
 Write-Host "Installing kee v$Version..."
 Write-Host "Downloading from: $Url"
 
-$Tmp = Join-Path $env:TEMP "kee-install.exe"
-Invoke-WebRequest -Uri $Url -OutFile $Tmp
-
-Write-Host "Running self-install..."
-$process = Start-Process -FilePath $Tmp -ArgumentList "self-install" -NoNewWindow -Wait -PassThru
-
-if ($process.ExitCode -eq 0) {
-    Remove-Item $Tmp -Force
-    Write-Host ""
-    Write-Host "kee v$Version installed successfully!"
-    Write-Host "Restart your terminal, then run: kee --version"
-} else {
-    Write-Error "Self-install failed with exit code $($process.ExitCode)"
+$Tmp = Join-Path $env:TEMP "kee-install-$PID.exe"
+try {
+    Invoke-WebRequest -Uri $Url -OutFile $Tmp -UseBasicParsing
+} catch {
+    Write-Error "Failed to download: $_"
     exit 1
 }
+
+if (-not (Test-Path $Tmp)) {
+    Write-Error "Download failed - file not found"
+    exit 1
+}
+
+Write-Host "Running self-install..."
+try {
+    $output = & $Tmp self-install 2>&1
+    Write-Host $output
+    
+    if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne $null) {
+        Write-Error "Self-install failed with exit code $LASTEXITCODE"
+        exit $LASTEXITCODE
+    }
+} catch {
+    Write-Error "Failed to run self-install: $_"
+    Remove-Item $Tmp -Force -ErrorAction SilentlyContinue
+    exit 1
+}
+
+Remove-Item $Tmp -Force -ErrorAction SilentlyContinue
+
+Write-Host ""
+Write-Host "kee v$Version installed successfully!"
+Write-Host "Restart your terminal, then run: kee --version"
