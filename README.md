@@ -1,6 +1,6 @@
 # 🗝️ Kee CLI
 
-**Kee** is a cross-platform terminal session recorder and replayer designed to turn messy terminal sessions into reusable, structured YAML recipes. Record your workflows, parameterize them with variables, and play them back safely on any machine.
+**Kee** is a cross-platform terminal session recorder and replayer designed to turn messy terminal sessions into reusable, structured `.kee` recipes. Record your workflows, parameterize them with variables, and play them back safely on any machine.
 
 [![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://go.dev/)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20|%20macOS%20|%20Linux-blue)](github.com/sem/kee)
@@ -10,7 +10,7 @@
 ## ✨ Features
 
 - 📹 **Session Recording**: Capture natural terminal workflows across Bash, Zsh, Git Bash, and PowerShell.
-- ⚡ **Structured Recipes**: Auto-generate readable YAML recipes from your terminal history.
+- ⚡ **Structured Recipes**: Auto-generate readable DSL recipes from your terminal history.
 - 🔄 **Safe Replay**: Execute recipes with variable prompts, dry-runs, and destructive command filtering.
 - 🛠️ **Interactive Refinement**: Post-record TUI (powered by [Charmbracelet](https://charm.sh/)) to group steps, add variables, and set danger levels.
 - 📦 **Dual-Scope Storage**: Manage project-specific recipes in `./.kee/` and global recipes in your user config directory.
@@ -96,24 +96,29 @@ kee run setup-project
 
 ## 📝 Recipe Format
 
-Recipes are stored as human-editable YAML:
+Recipes are stored as human-editable `.kee` files using a lightweight DSL:
 
-```yaml
-version: 1
-name: example-setup
-shell: bash
-variables:
-  - name: PROJECT_NAME
-    required: true
-    default: my-app
-steps:
-  - id: 1
-    description: Initialize Project
-    run: mkdir ${PROJECT_NAME} && cd ${PROJECT_NAME}
-  - id: 2
-    description: Dangerous Cleanup
-    run: rm -rf ./tmp
-    danger_level: high
+```
+.version 1
+.name setup-project
+.shell bash
+.tag setup project
+
+.var PROJECT_NAME = "my-app" -> Folder name to create
+.var GH_REPO -> GitHub repo URL (required, no default)
+
+.danger
+mkdir ${PROJECT_NAME} -> Creating project folder
+
+.secret .interactive
+gh auth login -> Logging in to GitHub
+
+.env NODE_ENV=production
+.workdir ${PROJECT_NAME}
+npm install -> Installing dependencies
+
+.on_failure continue
+npm run test -> Running tests (non-blocking)
 ```
 
 ---
