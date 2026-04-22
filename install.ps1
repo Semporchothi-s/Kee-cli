@@ -55,4 +55,4 @@ Remove-Item $Tmp -Force -ErrorAction SilentlyContinue
 
 Write-Host ""
 Write-Host "kee v$Version installed successfully!"
-Write-Host "Restart your terminal, then run: kee --version"
+Write-Host "Restart your terminal, then run: kee version"

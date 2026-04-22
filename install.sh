@@ -62,4 +62,4 @@ rm -f "$TMP"
 
 echo ""
 echo "kee v$VERSION installed successfully!"
-echo "Restart your terminal, then run: kee --version"
+echo "Restart your terminal, then run: kee version"
