@@ -36,17 +36,17 @@ if (-not (Test-Path $Tmp)) {
     exit 1
 }
 
-Write-Host "Running self-install..."
+Write-Host "Running install..."
 try {
-    $output = & $Tmp self-install 2>&1
+    $output = & $Tmp install 2>&1
     Write-Host $output
     
     if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne $null) {
-        Write-Error "Self-install failed with exit code $LASTEXITCODE"
+        Write-Error "Install failed with exit code $LASTEXITCODE"
         exit $LASTEXITCODE
     }
 } catch {
-    Write-Error "Failed to run self-install: $_"
+    Write-Error "Failed to run install: $_"
     Remove-Item $Tmp -Force -ErrorAction SilentlyContinue
     exit 1
 }

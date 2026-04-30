@@ -57,7 +57,7 @@ echo "Downloading from: $DOWNLOAD_URL"
 TMP=$(mktemp)
 curl -fsSL "$DOWNLOAD_URL" -o "$TMP"
 chmod +x "$TMP"
-"$TMP" self-install
+"$TMP" install
 rm -f "$TMP"
 
 echo ""
